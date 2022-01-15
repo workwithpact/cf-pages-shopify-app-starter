@@ -4,13 +4,13 @@ import '@shopify/polaris/build/esm/styles.css';
 import enTranslations from '@shopify/polaris/locales/en.json';
 import {AppProvider} from '@shopify/polaris';
 import InstallTemplate from './templates/install'
-
+import Guard from './components/guard';
 function App() {
   return (
     <AppProvider i18n={enTranslations}>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<>Hello</>} />
+          <Route path="/" element={<Guard validateSession>Welcome to your app!</Guard>} />
           <Route path="/install" element={<InstallTemplate />} />
           <Route
             path="*"

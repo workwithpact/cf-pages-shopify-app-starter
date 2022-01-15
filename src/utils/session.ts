@@ -1,11 +1,19 @@
+let hasNotifiefOfLocalURL = false;
+const getShop = () => {
+  let shop = null;
+  const url = new URL(window.location.href)
+  const params = url.searchParams;
+  const hashtagParams = new URLSearchParams(url.hash)
+  shop = params.get('shop') || hashtagParams.get('shop')
+  return shop
+}
 const getSessionKey = () => {
   let session = null;
-  let shop = null;
+  let shop = getShop();
   try {
     const url = new URL(window.location.href)
     const params = url.searchParams;
-    const hashtagParams = new URLSearchParams(url.hash)
-    shop = params.get('shop') || hashtagParams.get('shop')
+    const hashtagParams = new URLSearchParams(url.hash.slice(1, url.hash.length))
     session = shop ? params.get('session') || hashtagParams.get('session') || ((window as any)._pactSessions && (window as any).pactSessions[shop]) || localStorage.getItem(`pactSession_${shop}`) : null;
   } catch(e) {
     return;
@@ -17,6 +25,43 @@ const getSessionKey = () => {
       window.localStorage.setItem(`pactSession_${shop}`, session);
     } catch (e) {}
   }
+  if (!hasNotifiefOfLocalURL) {
+    console.log(`Looking to work locally? ?shop=${encodeURIComponent(shop || '')}#session=${encodeURIComponent(session)}`)
+    hasNotifiefOfLocalURL = true;
+  }
   return session
 }
-export {getSessionKey}
+
+const graphql = async (query: string, variables:any = null) => {
+  const session = getSessionKey();
+  if (!session) {
+    throw new Error('Session cannot be found');
+  }
+  return await (await fetch('/api/graphql.json', {
+    headers: {
+      contentType: 'application/json',
+      'x-shopify-session': session
+    },
+    method: 'POST',
+    body: JSON.stringify({
+      query,
+      variables: variables || {}
+    })
+  })).json()
+}
+
+const restApi = async (path: string, body?:any, method?:any) => {
+  const session = getSessionKey();
+  if (!session) {
+    throw new Error('Session cannot be found');
+  }
+  return await (await fetch(`/api${path}`, {
+    headers: {
+      contentType: 'application/json',
+      'x-shopify-session': session
+    },
+    method: method ? method : body ? 'POST' : 'GET',
+    body: body ? JSON.stringify(body) : null
+  })).json()
+}
+export {getSessionKey, graphql, restApi, getShop}
