@@ -1,7 +1,7 @@
 
 import validateHmac from '../../src/utils/validateHmac';
 import generateToken from '../../src/utils/generateToken';
-import { encrypt } from '../../src/utils/crypto'
+import { decrypt, encrypt } from '../../src/utils/crypto'
 const localEnv = require('../../env.json');
 
 export async function onRequest(context) {
@@ -17,6 +17,11 @@ export async function onRequest(context) {
   const url = new URL(request.url);
   const queryParams = url.searchParams;
   const config = {...localEnv, ...env}
+
+  const xx = 'aaaaaadadasdasdasdasdasdasadsd';
+  const xxb64 = await encrypt(config.SESSION_CRYPTO_ALGORIGHM || 'AES-CBC', config.SESSION_CRYPTO_KEY || config.SHOPIFY_APP_SECRET.split('shpss_').pop().slice(0, 32), xx);
+  console.log(xxb64);
+  console.log(await decrypt(config.SESSION_CRYPTO_ALGORIGHM || 'AES-CBC', config.SESSION_CRYPTO_KEY || config.SHOPIFY_APP_SECRET.split('shpss_').pop().slice(0, 32), xxb64))
 
   if (params.path === 'install') {
     const host = config.SHOPIFY_APP_HOST || `https://${url.host}/`;
@@ -43,6 +48,7 @@ export async function onRequest(context) {
     const authorization_code = queryParams.get('code');
     const hmac = queryParams.get('hmac');
     const shop = queryParams.get('shop') || '';
+    const state = queryParams.get('state');
     const matchesShopifyRegex = new RegExp(/^[a-zA-Z0-9][a-zA-Z0-9\-]*\.myshopify\.com$/)
     const queryParamsObject = {};
     for(let [key, val] of queryParams.entries()){ 

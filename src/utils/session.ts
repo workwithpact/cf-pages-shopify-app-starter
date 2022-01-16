@@ -33,31 +33,17 @@ const getSessionKey = () => {
 }
 
 const graphql = async (query: string, variables:any = null) => {
-  const session = getSessionKey();
-  if (!session) {
-    throw new Error('Session cannot be found');
-  }
-  return await (await fetch('/api/graphql.json', {
-    headers: {
-      'content-type': 'application/json',
-      'x-shopify-session': session
-    },
-    method: 'POST',
-    body: JSON.stringify({
-      query,
-      variables: variables || {}
-    })
-  })).json()
+  return restApi('/graphql.json', { query, variables}, 'POST', 'application/graphql')
 }
 
-const restApi = async (path: string, body?:any, method?:any) => {
+const restApi = async (path: string, body?:any, method?:any, contentType:any = 'application/json') => {
   const session = getSessionKey();
   if (!session) {
     throw new Error('Session cannot be found');
   }
   return await (await fetch(`/api${path}`, {
     headers: {
-      'content-type': 'application/json',
+      'content-type': contentType,
       'x-shopify-session': session
     },
     method: method ? method : body ? 'POST' : 'GET',
