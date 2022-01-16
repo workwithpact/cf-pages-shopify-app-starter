@@ -28,12 +28,17 @@ export async function onRequest(context) {
     if (key === 'host') continue;
     headers[key] = val;
   }
+  console.log({
+    'X-Shopify-Access-Token': session.tk,
+    'Accept': request.headers.get('Accept') || 'application/json',
+    'Content-Type': request.headers.get('Content-Type') || 'application/json'
+  })
   return fetch(url, {
     method: request.method,
     headers: {
       'X-Shopify-Access-Token': session.tk,
       'Accept': request.headers.get('Accept') || 'application/json',
-      'Content-Type': request.headers.get('Content-Type') || 'application/json'
+      'Content-Type': request.headers.get('Content-Type') || 'application/graphql'
     },
     body: request.body
   })
