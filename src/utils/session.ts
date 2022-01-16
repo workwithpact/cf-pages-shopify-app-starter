@@ -39,7 +39,7 @@ const graphql = async (query: string, variables:any = null) => {
   }
   return await (await fetch('/api/graphql.json', {
     headers: {
-      contentType: 'application/json',
+      'content-type': 'application/json',
       'x-shopify-session': session
     },
     method: 'POST',
@@ -57,7 +57,7 @@ const restApi = async (path: string, body?:any, method?:any) => {
   }
   return await (await fetch(`/api${path}`, {
     headers: {
-      contentType: 'application/json',
+      'content-type': 'application/json',
       'x-shopify-session': session
     },
     method: method ? method : body ? 'POST' : 'GET',
