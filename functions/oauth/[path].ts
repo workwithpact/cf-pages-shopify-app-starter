@@ -18,11 +18,6 @@ export async function onRequest(context) {
   const queryParams = url.searchParams;
   const config = {...localEnv, ...env}
 
-  const xx = 'aaaaaadadasdasdasdasdasdasadsd';
-  const xxb64 = await encrypt(config.SESSION_CRYPTO_ALGORIGHM || 'AES-CBC', config.SESSION_CRYPTO_KEY || config.SHOPIFY_APP_SECRET.split('shpss_').pop().slice(0, 32), xx);
-  console.log(xxb64);
-  console.log(await decrypt(config.SESSION_CRYPTO_ALGORIGHM || 'AES-CBC', config.SESSION_CRYPTO_KEY || config.SHOPIFY_APP_SECRET.split('shpss_').pop().slice(0, 32), xxb64))
-
   if (params.path === 'install') {
     const host = config.SHOPIFY_APP_HOST || `https://${url.host}/`;
     const shop = `${`${queryParams.get('shop')}`.replace('.myshopify.com', '')}.myshopify.com`;
@@ -37,7 +32,6 @@ export async function onRequest(context) {
       client_id: config.SHOPIFY_APP_KEY
     })
     redirectUrl.search = redirectParams.toString();
-    console.log(redirectUrl)
     return new Response('Redirecting you to Shopify\'s OAuth flow', {
       status: 302,
       headers: {
