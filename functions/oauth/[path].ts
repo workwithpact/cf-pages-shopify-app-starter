@@ -42,6 +42,7 @@ export async function onRequest(context) {
     const authorization_code = queryParams.get('code');
     const hmac = queryParams.get('hmac');
     const shop = queryParams.get('shop') || '';
+    const host = queryParams.get('host') || '';
     const state = queryParams.get('state');
     const matchesShopifyRegex = new RegExp(/^[a-zA-Z0-9][a-zA-Z0-9\-]*\.myshopify\.com$/)
     const queryParamsObject = {};
@@ -75,7 +76,7 @@ export async function onRequest(context) {
     return new Response('Redirecting you back to the application', {
       status: 302,
       headers: {
-        Location: `/?shop=${encodeURIComponent(shop)}#session=${encodeURIComponent(sessionB64)}`
+        Location: `/?shop=${encodeURIComponent(shop)}&host=${encodeURIComponent(host)}#session=${encodeURIComponent(sessionB64)}`
       }
     })
   }
