@@ -8,19 +8,18 @@ const Guard = ({validateSession = false, children = null} : { validateSession?: 
     const run = async () => {
       const session = getSessionKey();
       const shop = getShop();
-      console.log('asd');
       if (!validateSession && session) {
         setIsValid(true);
         return
       }
       if (session) {
-        const query = `query {
+        const query = `{
           shop {
             name
           }
         }`
         const data = await graphql(query);
-        if (data && data.shop && data.shop.name) {
+        if (data && data.data && data.data.shop && data.data.shop.name) {
           setIsValid(true);
         }
       }

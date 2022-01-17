@@ -33,7 +33,7 @@ const getSessionKey = () => {
 }
 
 const graphql = async (query: string, variables:any = null) => {
-  return restApi('/graphql.json', { query, variables}, 'POST', 'application/graphql')
+  return restApi('/graphql.json', { query, variables}, 'POST', 'application/json')
 }
 
 const restApi = async (path: string, body?:any, method?:any, contentType:any = 'application/json') => {
