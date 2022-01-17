@@ -21,6 +21,7 @@ const Guard = ({validateSession = false, children = null} : { validateSession?: 
         const data = await graphql(query);
         if (data && data.data && data.data.shop && data.data.shop.name) {
           setIsValid(true);
+          return;
         }
       }
       window.location.href = shop ? `/oauth/install?shop=${encodeURIComponent(shop)}` : '/install'
