@@ -14,7 +14,7 @@ const getSessionKey = () => {
     const url = new URL(window.location.href)
     const params = url.searchParams;
     const hashtagParams = new URLSearchParams(url.hash.slice(1, url.hash.length))
-    session = shop ? params.get('session') || hashtagParams.get('session') || ((window as any)._pactSessions && (window as any)._pactSessions[shop]) || localStorage.getItem(`pactSession_${shop}`) : null;
+    session = shop ? params.get('session') || hashtagParams.get('session') || ((window as any)._pactSessions && (window as any).pactSessions[shop]) || localStorage.getItem(`pactSession_${shop}`) : null;
   } catch(e) {
     return;
   }
@@ -24,7 +24,6 @@ const getSessionKey = () => {
     try {
       window.localStorage.setItem(`pactSession_${shop}`, session);
     } catch (e) {}
-    window.location.hash = '';
   }
   if (!hasNotifiefOfLocalURL) {
     console.log(`Looking to work locally? ?shop=${encodeURIComponent(shop || '')}#session=${encodeURIComponent(session)}`)

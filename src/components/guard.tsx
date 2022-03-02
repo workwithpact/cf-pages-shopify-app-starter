@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Frame, Loading } from '@shopify/polaris';
 import { useEffect, useState } from 'react';
 
 import { getSessionKey, getShop, graphql } from '../utils/session';
@@ -29,13 +28,7 @@ const Guard = ({validateSession = false, children = null} : { validateSession?: 
     }
     run();
   }, [])
-  return isValid ? children : (
-  <div style={{height: '100px'}}>
-    <Frame>
-      <Loading />
-    </Frame>
-  </div>
-  );
+  return isValid ? children : null;
 }
 
 export default Guard;

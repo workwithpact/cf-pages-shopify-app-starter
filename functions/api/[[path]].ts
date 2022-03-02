@@ -20,8 +20,8 @@ export async function onRequest(context) {
   const algorithm = config.SESSION_CRYPTO_ALGORIGHM || 'AES-CBC';
   const key = config.SESSION_CRYPTO_KEY || config.SHOPIFY_APP_SECRET.split('shpss_').pop().slice(0, 32);
   const session = JSON.parse(await decrypt(algorithm, key, sessionData));
-
-  const url = `https://${session.sh}/${path}`;
+  const querystring = request.url.split('?').slice(1).join('?');
+  const url = `https://${session.sh}/${path}${querystring ? `?${querystring}` : ''}`;
   const headers = {};
   const disallowedHeaders = ['x-shopify-session', 'host', 'cookie', 'origin', 'referer'];
   for (let [key, val] of request.headers.entries()) {
