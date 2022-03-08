@@ -86,9 +86,10 @@ export async function onRequest(context) {
     const params = new URLSearchParams(stateData.params);
     params.set('shop', shop);
     params.set('host', host);
-
     if (env?.TOKENS) { // The TOKENS variable exists, which means it is tied to a CloudFlare KV. Great, let's store our token in there!
-      await env.TOKENS.put(shop, JSON.stringify(token));
+      await env.TOKENS.put(`${config.SHOPIFY_APP_KEY}_${shop}`, JSON.stringify(token), {
+        metadata: {...token, shop}
+      });
     }
     
     return new Response('Redirecting you back to the application', {
