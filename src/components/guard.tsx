@@ -6,25 +6,33 @@ const Guard = ({validateSession = false, children = null} : { validateSession?: 
   const [isValid, setIsValid] = useState(false);
   useEffect(() => {
     const run = async () => {
-      const session = getSessionKey();
       const shop = getShop();
-      if (!validateSession && session) {
-        setIsValid(true);
-        return
-      }
-      if (session) {
-        const query = `{
-          shop {
-            name
-          }
-        }`
-        const data = await graphql(query);
-        if (data && data.data && data.data.shop && data.data.shop.name) {
+      try {
+        const session = getSessionKey();
+        if (!validateSession && session) {
           setIsValid(true);
-          return;
+          return
         }
+        if (session) {
+          const query = `{
+            shop {
+              name
+            }
+          }`
+          const data = await graphql(query);
+          if (data && data.data && data.data.shop && data.data.shop.name) {
+            setIsValid(true);
+            return;
+          }
+        }
+      } catch (e) {
+        console.error(e);
       }
-      window.location.href = shop ? `/oauth/install?shop=${encodeURIComponent(shop)}` : '/install'
+      if (window.top) {
+        window.top.location.href = shop ? `/oauth/install?shop=${encodeURIComponent(shop)}&${window.location.search}` : '/install'
+        return
+      } 
+      window.location.href = shop ? `/oauth/install?shop=${encodeURIComponent(shop)}&${window.location.search}` : '/install'
     }
     run();
   }, [])

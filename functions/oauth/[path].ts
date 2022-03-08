@@ -19,11 +19,19 @@ export async function onRequest(context) {
   const config = {...localEnv, ...env}
 
   if (params.path === 'install') {
-    const host = config.SHOPIFY_APP_HOST || `https://${url.host}/`;
+    const host = config.SHOPIFY_APP_HOST || `${url.protocol}//${url.host}/`;
     const shop = `${`${queryParams.get('shop')}`.replace('.myshopify.com', '')}.myshopify.com`;
     const scope = queryParams.get('scope') || config.SHOPIFY_APP_SCOPE || 'read_products';
     const redirect_uri = queryParams.get('redirect_uri') || config.SHOPIFY_REDIRECT_URI || `${host}oauth/callback`;
-    const state = (Math.random()*10e17).toString(16);
+    const stateData = {
+      shop,
+      timestamp: new Date().getTime(),
+      params: queryParams.toString()
+    }
+    const algorithm = config.SESSION_CRYPTO_ALGORIGHM || 'AES-CBC';
+    const key = config.SESSION_CRYPTO_KEY || config.SHOPIFY_APP_SECRET.split('shpss_').pop().slice(0, 32);
+    const state =  await encrypt(algorithm, key, JSON.stringify(stateData));
+
     const redirectUrl = new URL(`https://${shop}/admin/oauth/authorize`);
     const redirectParams = new URLSearchParams({
       scope,
@@ -44,6 +52,9 @@ export async function onRequest(context) {
     const shop = queryParams.get('shop') || '';
     const host = queryParams.get('host') || '';
     const state = queryParams.get('state');
+    const algorithm = config.SESSION_CRYPTO_ALGORIGHM || 'AES-CBC';
+    const key = config.SESSION_CRYPTO_KEY || config.SHOPIFY_APP_SECRET.split('shpss_').pop().slice(0, 32);
+    const stateData = JSON.parse(await decrypt(algorithm, key, state));
     const matchesShopifyRegex = new RegExp(/^[a-zA-Z0-9][a-zA-Z0-9\-]*\.myshopify\.com$/)
     const queryParamsObject = {};
     for(let [key, val] of queryParams.entries()){ 
@@ -69,14 +80,15 @@ export async function onRequest(context) {
       sh: shop
     }
     const jsonSession = JSON.stringify(sessionData)
-    const algorithm = config.SESSION_CRYPTO_ALGORIGHM || 'AES-CBC';
-    const key = config.SESSION_CRYPTO_KEY || config.SHOPIFY_APP_SECRET.split('shpss_').pop().slice(0, 32);
     const sessionB64 = await encrypt(algorithm, key, jsonSession);
+    const params = new URLSearchParams(stateData.params);
+    params.set('shop', shop);
+    params.set('host', host);
     
     return new Response('Redirecting you back to the application', {
       status: 302,
       headers: {
-        Location: `/?shop=${encodeURIComponent(shop)}&host=${encodeURIComponent(host)}#session=${encodeURIComponent(sessionB64)}`
+        Location: `/?${params.toString()}&${queryParams.toString()}#session=${encodeURIComponent(sessionB64)}`
       }
     })
   }

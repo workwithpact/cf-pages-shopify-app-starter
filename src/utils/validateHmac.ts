@@ -11,7 +11,7 @@ const validateHmac = async (hmac: string, secret: string, query: any) => {
       return accum;
     }, {});
 
-  const message = (new URLSearchParams(orderedMap)).toString();
+  const message = unescape((new URLSearchParams(orderedMap)).toString());
   console.log('message', message);
 
   const key = await crypto.subtle.importKey(
@@ -21,7 +21,7 @@ const validateHmac = async (hmac: string, secret: string, query: any) => {
     false,
     ["sign"],
   )
-  
+
   const mac = (await crypto.subtle.sign("HMAC", key, encoder.encode(message)))
   const signature = Array.from(new Uint8Array(mac)).map(b => b.toString(16).padStart(2, '0')).join('')
   return signature === hmac;

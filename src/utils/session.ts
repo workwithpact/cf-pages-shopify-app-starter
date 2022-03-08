@@ -12,9 +12,9 @@ const getSessionKey = () => {
   let shop = getShop();
   try {
     const url = new URL(window.location.href)
-    const params = url.searchParams;
+    // const params = url.searchParams;
     const hashtagParams = new URLSearchParams(url.hash.slice(1, url.hash.length))
-    session = shop ? params.get('session') || hashtagParams.get('session') || ((window as any)._pactSessions && (window as any).pactSessions[shop]) || localStorage.getItem(`pactSession_${shop}`) : null;
+    session = shop ? /*params.get('session') || */ hashtagParams.get('session') || ((window as any)._pactSessions && (window as any).pactSessions[shop]) || localStorage.getItem(`pactSession_${shop}`) : null;
   } catch(e) {
     return;
   }

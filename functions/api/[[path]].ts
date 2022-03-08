@@ -14,7 +14,7 @@ export async function onRequest(context) {
 
   const config = {...localEnv, env}
   const version = config.SHOPIFY_API_VERSION || '2022-01';
-  const path = `admin/api/${version}/${params.path}`;
+  const path = `admin/api/${version}/${params.path.join('/')}`;
   const sessionData = request.headers.get('x-shopify-session');
 
   const algorithm = config.SESSION_CRYPTO_ALGORIGHM || 'AES-CBC';
