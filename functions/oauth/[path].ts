@@ -4,6 +4,8 @@ import generateToken from '../../src/utils/generateToken';
 import { decrypt, encrypt } from '../../src/utils/crypto'
 const localEnv = require('../../env.json');
 
+declare const TOKENS:any;
+
 export async function onRequest(context) {
   // Contents of context object
   const {
@@ -84,6 +86,10 @@ export async function onRequest(context) {
     const params = new URLSearchParams(stateData.params);
     params.set('shop', shop);
     params.set('host', host);
+
+    if (env?.TOKENS) { // The TOKENS variable exists, which means it is tied to a CloudFlare KV. Great, let's store our token in there!
+      await env.TOKENS.put(shop, JSON.stringify(token));
+    }
     
     return new Response('Redirecting you back to the application', {
       status: 302,
