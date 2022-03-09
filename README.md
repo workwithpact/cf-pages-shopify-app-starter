@@ -17,3 +17,16 @@ Next, copy `.env.example` to `.env`, changing values for the appropriate ones.
 Run `yarn && yarn start`, and off you go. 
 
 To deploy, link your repository in GitHub pages and don't forget to add in your environment variables, similarly to your .env file :-)
+
+## I'm more of a visual, can we build something together?
+Sure can! Follow along!
+
+### Part 1 - Getting started
+https://www.loom.com/share/0730258114a44f02b7312a20c8731a46
+
+
+### Part 2 - Building the UI
+https://www.loom.com/share/7c3dba51e09548da8459b22c3c6186ec
+
+### Part 3 - Handling uploads, data and errors
+https://www.loom.com/share/e67c15b69607437e86318cfd97b1e732
