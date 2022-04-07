@@ -33,3 +33,6 @@ https://www.loom.com/share/e67c15b69607437e86318cfd97b1e732
 
 ### Part 4 - Querying data from Shopify
 https://www.loom.com/share/4d6303360c4846b5ab7b55b05714e933
+
+### Part 5 - Filtering data
+https://www.loom.com/share/427df47bb3dc4a6791117b5a88ce829e
