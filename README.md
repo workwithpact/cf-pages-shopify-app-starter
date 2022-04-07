@@ -30,3 +30,6 @@ https://www.loom.com/share/7c3dba51e09548da8459b22c3c6186ec
 
 ### Part 3 - Handling uploads, data and errors
 https://www.loom.com/share/e67c15b69607437e86318cfd97b1e732
+
+### Part 4 - Querying data from Shopify
+https://www.loom.com/share/4d6303360c4846b5ab7b55b05714e933
