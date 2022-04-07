@@ -37,17 +37,44 @@ const graphql = async (query: string, variables:any = null) => {
 }
 
 const restApi = async (path: string, body?:any, method?:any, contentType:any = 'application/json') => {
+  const data = await expandedRestApi(path, body, method, contentType);
+  return data.data;
+}
+const expandedRestApi = async (path: string, body?:any, method?:any, contentType:any = 'application/json') => {
   const session = getSessionKey();
   if (!session) {
     throw new Error('Session cannot be found');
   }
-  return await (await fetch(`/api${path}`, {
+  const response = await fetch(`/api${path}`, {
     headers: {
       'content-type': contentType,
       'x-shopify-session': session
     },
     method: method ? method : body ? 'POST' : 'GET',
     body: body ? JSON.stringify(body) : null
-  })).json()
+  });
+  const data = await response.json();
+  const returnData = {
+    data,
+    headers: response.headers,
+    page_info: {}
+  } as {data: any, headers: Headers, page_info: Record<string, string>}
+
+  const linkHeader = response.headers.get('link');
+
+  if (linkHeader) {
+    const parts = linkHeader.split(',');
+    parts.forEach(part => {
+      const section = part.split(';');
+      const url = new URL(section[0].replace(/<(.*)>/, '$1').trim());
+      const params = new URLSearchParams(url.search);
+      const name = section[1].replace(/rel="(.*)"/, '$1').trim();
+      const pageInfo = params.get('page_info');
+      if (pageInfo) {
+        returnData.page_info[name] = pageInfo;
+      }
+    });
+  }
+  return returnData;
 }
-export {getSessionKey, graphql, restApi, getShop}
+export {getSessionKey, graphql, restApi, getShop, expandedRestApi}
