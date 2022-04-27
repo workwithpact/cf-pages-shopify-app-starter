@@ -16,7 +16,7 @@ Next, copy `.env.example` to `.env`, changing values for the appropriate ones.
 
 Run `yarn && yarn start`, and off you go. 
 
-To deploy, link your repository in GitHub pages and don't forget to add in your environment variables, similarly to your .env file :-)
+To deploy, link your repository in CloudFlare pages and don't forget to add in your environment variables, just like you did in your .env file :-)
 
 ## I'm more of a visual, can we build something together?
 Sure can! Follow along!
